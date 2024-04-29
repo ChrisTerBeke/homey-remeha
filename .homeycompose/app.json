@@ -1,0 +1,29 @@
+{
+  "id": "com.christerbeke.homey-remeha",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "name": {
+    "en": "Remeha Home"
+  },
+  "description": {
+    "en": "Adds support for Remeha Home connected appliances."
+  },
+  "category": [
+    "climate"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Chris ter Beke",
+    "email": "contact+homey@christerbeke.com"
+  }
+}
