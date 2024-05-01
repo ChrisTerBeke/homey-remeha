@@ -1,16 +1,12 @@
-'use strict';
+import sourceMapSupport from 'source-map-support'
+sourceMapSupport.install()
 
-import Homey from 'homey';
+import { App } from 'homey'
 
-class MyApp extends Homey.App {
-
-  /**
-   * onInit is called when the app is initialized.
-   */
+class RemehaApp extends App {
   async onInit() {
-    this.log('MyApp has been initialized');
+    this.log('RemehaApp is running...')
   }
-
 }
 
-module.exports = MyApp;
+module.exports = RemehaApp

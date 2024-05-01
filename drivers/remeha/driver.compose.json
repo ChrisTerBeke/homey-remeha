@@ -1,0 +1,45 @@
+{
+  "name": {
+    "en": "Remeha Home"
+  },
+  "class": "thermostat",
+  "capabilities": [
+    "meter_gas",
+    "alarm_heat",
+    "measure_pressure",
+    "target_temperature",
+    "measure_temperature",
+    "thermostat_mode"
+  ],
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "login"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": true
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}
