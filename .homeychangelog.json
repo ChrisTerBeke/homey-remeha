@@ -1,5 +1,8 @@
 {
   "0.0.1": {
     "en": "First test release"
+  },
+  "0.0.2": {
+    "en": "Fixes for refreshing access token"
   }
 }
