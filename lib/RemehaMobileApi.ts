@@ -32,6 +32,10 @@ export class RemehaMobileApi {
         this._accessToken = accessToken
     }
 
+    public setAccessToken(accessToken: string): void {
+        this._accessToken = accessToken
+    }
+
     public async devices(): Promise<DeviceData[]> {
         const dashboard = await this._call('/homes/dashboard') as DashboardResponse
         if (!dashboard?.appliances) return []

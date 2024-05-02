@@ -43,6 +43,8 @@ class RemehaThermostatDevice extends Device {
   private async _syncAttributes(): Promise<void> {
     await this._refreshAccessToken()
     if (!this._client) return this.setUnavailable('No Remeha Home client')
+    const { accessToken } = this.getStore()
+    this._client.setAccessToken(accessToken)
     const { id } = this.getData()
     const data = await this._client.device(id)
     if (!data) return this.setUnavailable('Could not find thermostat data')
@@ -54,7 +56,10 @@ class RemehaThermostatDevice extends Device {
   private async _setTargetTemperature(value: number): Promise<void> {
     await this._refreshAccessToken()
     if (!this._client) return this.setUnavailable('No Remeha Home client')
-    await this._client.setTargetTemperature(this.getData().id, value)
+    const { accessToken } = this.getStore()
+    this._client.setAccessToken(accessToken)
+    const { id } = this.getData()
+    await this._client.setTargetTemperature(id, value)
   }
 
   private async _refreshAccessToken(): Promise<void> {
