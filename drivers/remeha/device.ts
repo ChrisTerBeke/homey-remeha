@@ -63,8 +63,8 @@ class RemehaThermostatDevice extends Device {
     const decodedAccessToken = this._parseJwt(accessToken)
     if (decodedAccessToken.exp * 1000 > Date.now()) return
     const tokenData = await authorizer.refreshAccessToken(refreshToken)
-    this.setStoreValue('accessToken', tokenData.accessToken)
-    this.setStoreValue('refreshToken', tokenData.refreshToken)
+    await this.setStoreValue('accessToken', tokenData.accessToken)
+    await this.setStoreValue('refreshToken', tokenData.refreshToken)
   }
 
   private _parseJwt(token: string): {exp: number} {
