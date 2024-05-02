@@ -8,8 +8,7 @@
     "measure_temperature"
   ],
   "platforms": [
-    "local",
-    "cloud"
+    "local"
   ],
   "connectivity": [
     "cloud"
