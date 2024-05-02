@@ -49,8 +49,13 @@ class RemehaThermostatDevice extends Device {
     const data = await this._client.device(id)
     if (!data) return this.setUnavailable('Could not find thermostat data')
     this.setAvailable()
-    this.setCapabilityValue('measure_temperature', data?.temperature)
-    this.setCapabilityValue('target_temperature', data?.targetTemperature)
+    this.setCapabilityValue('measure_temperature', data.temperature)
+    this.setCapabilityValue('target_temperature', data.targetTemperature)
+    this.setCapabilityValue('measure_temperature.water', data.waterTemperature)
+    this.setCapabilityValue('target_temperature.water', data.targetWaterTemperature)
+    this.setCapabilityValue('measure_pressure.water', data.waterPressure)
+    this.setCapabilityValue('alarm_water', data.waterPressureOK)
+    this.setCapabilityValue('measure_temperature.outdoor', data.outdoorTemperature)
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {
