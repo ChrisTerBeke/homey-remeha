@@ -12,7 +12,7 @@
     "en": "Remeha Home"
   },
   "description": {
-    "en": "Adds support for Remeha Home connected appliances."
+    "en": "Creating better living environments."
   },
   "category": [
     "climate"
@@ -27,10 +27,17 @@
     "name": "Chris ter Beke",
     "email": "contact+homey@christerbeke.com"
   },
+  "brandColor": "#302929",
+  "source": "https://github.com/ChrisTerBeke/homey-remeha",
+  "support": "https://github.com/ChrisTerBeke/homey-remeha/issues",
+  "homepage": "https://github.com/ChrisTerBeke/homey-remeha",
+  "bugs": {
+    "url": "https://github.com/ChrisTerBeke/homey-remeha/issues"
+  },
   "drivers": [
     {
       "name": {
-        "en": "Remeha Home"
+        "en": "Remeha eTwist"
       },
       "class": "thermostat",
       "capabilities": [
