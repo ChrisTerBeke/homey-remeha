@@ -1,6 +1,6 @@
 {
-  "name": "com.christerbeke.homey-remeha",
-  "version": "1.0.0",
+  "name": "com.christerbeke.remeha-home",
+  "version": "0.0.1",
   "main": "app.ts",
   "scripts": {
     "start": "homey app run",

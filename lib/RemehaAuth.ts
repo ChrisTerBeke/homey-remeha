@@ -29,6 +29,11 @@ export class RemehaAuth {
         return tokenData
     }
 
+    public async refreshAccessToken(refreshToken: string): Promise<TokenData> {
+        const tokenData = await this._refreshTokenStep(refreshToken)
+        return tokenData
+    }
+
     private async _loginFormStep(state: string, codeChallenge: string): Promise<{ requestID: string, csrfToken: string }> {
         const loginFormQuery = this._loginFormQuery(state, codeChallenge)
         const url = `${this._rootURL}/oauth2/v2.0/authorize?${loginFormQuery.toString()}`
@@ -161,6 +166,30 @@ export class RemehaAuth {
             code: authorizationCode,
             redirect_uri: this._redirectURI,
             code_verifier: codeVerifier,
+            client_id: this._clientID,
+        })
+    }
+
+    private async _refreshTokenStep(refreshToken: string): Promise<TokenData> {
+        const query = this._tokenQuery()
+        const body = this._refreshTokenBody(refreshToken)
+        const url = `${this._rootURL}/oauth2/v2.0/token?${query.toString()}`
+        const tokenResponse = await this._fetch(url, { method: 'POST', body })
+        if (tokenResponse.status !== 200) throw new Error('Failed to get token')
+        const data = await tokenResponse.json()
+        return {
+            accessToken: data['access_token'],
+            tokenType: data['token_type'],
+            expiresIn: data['expires_in'],
+            refreshToken: data['refresh_token'],
+            scope: data['scope'],
+        }
+    }
+
+    private _refreshTokenBody(refreshToken: string): URLSearchParams {
+        return new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken,
             client_id: this._clientID,
         })
     }

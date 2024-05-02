@@ -1,57 +1,75 @@
-import Homey from 'homey';
+import { Device } from 'homey'
+import { RemehaMobileApi } from '../../lib/RemehaMobileApi'
+import { RemehaAuth } from '../../lib/RemehaAuth'
 
-class MyDevice extends Homey.Device {
+const POLL_INTERVAL_MS = 1000 * 60 * 1
 
-  /**
-   * onInit is called when the device is initialized.
-   */
-  async onInit() {
-    this.log('MyDevice has been initialized');
+class RemehaThermostatDevice extends Device {
+
+  private _syncInterval?: NodeJS.Timer
+  private _client?: RemehaMobileApi
+
+  async onInit(): Promise<void> {
+    this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
+    this._init()
   }
 
-  /**
-   * onAdded is called when the user adds the device, called just after pairing.
-   */
-  async onAdded() {
-    this.log('MyDevice has been added');
+  async onUninit(): Promise<void> {
+    this._uninit()
   }
 
-  /**
-   * onSettings is called when the user updates the device's settings.
-   * @param {object} event the onSettings event data
-   * @param {object} event.oldSettings The old settings object
-   * @param {object} event.newSettings The new settings object
-   * @param {string[]} event.changedKeys An array of keys changed since the previous version
-   * @returns {Promise<string|void>} return a custom message that will be displayed
-   */
-  async onSettings({
-    oldSettings,
-    newSettings,
-    changedKeys,
-  }: {
-    oldSettings: { [key: string]: boolean | string | number | undefined | null };
-    newSettings: { [key: string]: boolean | string | number | undefined | null };
-    changedKeys: string[];
-  }): Promise<string | void> {
-    this.log("MyDevice settings where changed");
+  async onAdded(): Promise<void> {
+    this._init()
   }
 
-  /**
-   * onRenamed is called when the user updates the device's name.
-   * This method can be used this to synchronise the name to the device.
-   * @param {string} name The new name
-   */
-  async onRenamed(name: string) {
-    this.log('MyDevice was renamed');
+  async onDeleted(): Promise<void> {
+    this._uninit()
   }
 
-  /**
-   * onDeleted is called when the user deleted the device.
-   */
-  async onDeleted() {
-    this.log('MyDevice has been deleted');
+  private async _init(): Promise<void> {
+    const { accessToken } = this.getStore()
+    this._client = new RemehaMobileApi(accessToken)
+    this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+    this._syncAttributes()
   }
 
+  async _uninit(): Promise<void> {
+    this.setUnavailable()
+    clearInterval(this._syncInterval as NodeJS.Timeout)
+    this._syncInterval = undefined
+    this._client = undefined
+  }
+
+  private async _syncAttributes(): Promise<void> {
+    await this._refreshAccessToken()
+    if (!this._client) return this.setUnavailable('No Remeha Home client')
+    const { id } = this.getData()
+    const data = await this._client.device(id)
+    if (!data) return this.setUnavailable('Could not find thermostat data')
+    this.setAvailable()
+    this.setCapabilityValue('measure_temperature', data?.temperature)
+    this.setCapabilityValue('target_temperature', data?.targetTemperature)
+  }
+
+  private async _setTargetTemperature(value: number): Promise<void> {
+    await this._refreshAccessToken()
+    if (!this._client) return this.setUnavailable('No Remeha Home client')
+    await this._client.setTargetTemperature(this.getData().id, value)
+  }
+
+  private async _refreshAccessToken(): Promise<void> {
+    const authorizer = new RemehaAuth()
+    const { accessToken, refreshToken } = this.getStore()
+    const decodedAccessToken = this._parseJwt(accessToken)
+    if (decodedAccessToken.exp * 1000 > Date.now()) return
+    const tokenData = await authorizer.refreshAccessToken(refreshToken)
+    this.setStoreValue('accessToken', tokenData.accessToken)
+    this.setStoreValue('refreshToken', tokenData.refreshToken)
+  }
+
+  private _parseJwt(token: string): {exp: number} {
+    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
+  }
 }
 
-module.exports = MyDevice;
+module.exports = RemehaThermostatDevice

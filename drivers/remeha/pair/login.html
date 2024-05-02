@@ -2,8 +2,14 @@
     function login() {
         var email = document.getElementById('email').value
         var password = document.getElementById('password').value
-        Homey.emit('login', `${email}:${password}`)
         Homey.showLoadingOverlay()
+        Homey.emit('login', `${email}:${password}`).then(() => {
+            Homey.showView('list_devices')
+        }).catch(error => {
+            Homey.showAlert('error', 'An error occurred')
+        }).finally(() => {
+            Homey.hideLoadingOverlay()
+        })
     }
 </script>
 
@@ -17,11 +23,11 @@
     <fieldset class="homey-form-fieldset">
         <div class="homey-form-group">
             <label class="homey-form-label" for="email" data-i18n="pair.email"></label>
-            <input class="homey-form-input" id="email" type="email" value="" />
+            <input class="homey-form-input" id="email" type="email" autocomplete="email" value="" />
         </div>
         <div class="homey-form-group">
             <label class="homey-form-label" for="password" data-i18n="pair.password"></label>
-            <input class="homey-form-input" id="password" type="password" value="" />
+            <input class="homey-form-input" id="password" type="password" autocomplete="current-password" value="" />
         </div>
     </fieldset>
 </form>

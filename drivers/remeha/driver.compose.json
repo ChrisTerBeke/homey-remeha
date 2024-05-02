@@ -4,12 +4,8 @@
   },
   "class": "thermostat",
   "capabilities": [
-    "meter_gas",
-    "alarm_heat",
-    "measure_pressure",
     "target_temperature",
-    "measure_temperature",
-    "thermostat_mode"
+    "measure_temperature"
   ],
   "platforms": [
     "local",
@@ -32,9 +28,6 @@
       "template": "list_devices",
       "navigation": {
         "next": "add_devices"
-      },
-      "options": {
-        "singular": true
       }
     },
     {

@@ -1,9 +1,25 @@
 import fetch from 'node-fetch'
 
 export type DeviceData = {
+    id: string
     name: string
     temperature: number
     targetTemperature: number
+}
+
+type ResponseClimateZone = {
+    climateZoneId: string
+    name: string
+    roomTemperature: number
+    setPoint: number
+}
+
+type ResponseAppliance = {
+    climateZones: ResponseClimateZone[]
+}
+
+type DashboardResponse = {
+    appliances: ResponseAppliance[]
 }
 
 export class RemehaMobileApi {
@@ -16,27 +32,50 @@ export class RemehaMobileApi {
         this._accessToken = accessToken
     }
 
-    public async device(): Promise < DeviceData > {
-        const dashboard = await this._call('/homes/dashboard')
-        const climateZone = dashboard['appliances'][0]['climateZones'][0]
-        return {
-            name: climateZone['name'],
-            temperature: climateZone['roomTemperature'],
-            targetTemperature: climateZone['setPoint'],
-        }
+    public async devices(): Promise<DeviceData[]> {
+        const dashboard = await this._call('/homes/dashboard') as DashboardResponse
+        if (!dashboard?.appliances) return []
+        const devices: DeviceData[] = []
+        dashboard.appliances.forEach(appliance => {
+            if (!appliance?.climateZones) return
+            appliance.climateZones.forEach(climateZone => {
+                devices.push({
+                    id: climateZone.climateZoneId,
+                    name: climateZone.name,
+                    temperature: climateZone.roomTemperature,
+                    targetTemperature: climateZone.setPoint,
+                })
+            })
+        })
+        return devices
     }
 
-    private async _call(path: string, method: string = 'GET'): Promise<any> {
-        const response = await fetch(`${this._rootURL}/${path}`, {
+    public async device(id: string): Promise<DeviceData | undefined> {
+        const devices = await this.devices()
+        return devices.find(device => device.id === id)
+    }
+
+    public async setTargetTemperature(climateZoneID: string, roomTemperatureSetPoint: number): Promise<void> {
+        await this._call(`/climate-zones/${climateZoneID}/modes/temporary-override`, 'POST', { roomTemperatureSetPoint })
+    }
+
+    private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number } | undefined = undefined): Promise<any> {
+        const response = await fetch(`${this._rootURL}${path}`, {
             method: method,
             headers: {
                 'Authorization': `Bearer ${this._accessToken}`,
                 'Ocp-Apim-Subscription-Key': this._subscriptionKey,
-            }
+                'Content-Type': 'application/json',
+            },
+            body: data ? JSON.stringify(data) : undefined,
         })
         if (response.status !== 200) {
-            throw new Error(`Failed to call ${path}`)
+            return
         }
-        return await response.json()
+        const responseBody = await response.text()
+        if (responseBody.length > 0) {
+            return JSON.parse(responseBody)
+        }
+        return responseBody
     }
 }
