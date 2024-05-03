@@ -10,5 +10,6 @@
     "setable": false,
     "units": {
         "en": "°C"
-    }
+    },
+    "insights": true
 }
