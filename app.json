@@ -41,7 +41,11 @@
       "class": "thermostat",
       "capabilities": [
         "target_temperature",
-        "measure_temperature"
+        "measure_temperature",
+        "measure_temperature_water",
+        "measure_temperature_outside",
+        "measure_pressure",
+        "alarm_water"
       ],
       "platforms": [
         "local"
@@ -72,5 +76,35 @@
       ],
       "id": "remeha"
     }
-  ]
+  ],
+  "capabilities": {
+    "measure_temperature_outside": {
+      "type": "number",
+      "title": {
+        "en": "Outside",
+        "nl": "Buiten"
+      },
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/temperature.svg",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C"
+      }
+    },
+    "measure_temperature_water": {
+      "type": "number",
+      "title": {
+        "en": "Hot Water",
+        "nl": "Warm Water"
+      },
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/temperature.svg",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C"
+      }
+    }
+  }
 }

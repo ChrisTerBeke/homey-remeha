@@ -6,9 +6,9 @@
   "capabilities": [
     "target_temperature",
     "measure_temperature",
-    "measure_temperature.outside",
-    "measure_temperature.water",
-    "measure_pressure.water",
+    "measure_temperature_water",
+    "measure_temperature_outside",
+    "measure_pressure",
     "alarm_water"
   ],
   "platforms": [

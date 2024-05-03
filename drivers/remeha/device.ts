@@ -10,6 +10,10 @@ class RemehaThermostatDevice extends Device {
   private _client?: RemehaMobileApi
 
   async onInit(): Promise<void> {
+    this.addCapability('measure_temperature_water')
+    this.addCapability('measure_temperature_outside')
+    this.addCapability('measure_pressure')
+    this.addCapability('alarm_water')
     this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
     this._init()
   }
@@ -51,11 +55,10 @@ class RemehaThermostatDevice extends Device {
     this.setAvailable()
     this.setCapabilityValue('measure_temperature', data.temperature)
     this.setCapabilityValue('target_temperature', data.targetTemperature)
-    this.setCapabilityValue('measure_temperature.water', data.waterTemperature)
-    this.setCapabilityValue('target_temperature.water', data.targetWaterTemperature)
-    this.setCapabilityValue('measure_pressure.water', data.waterPressure)
-    this.setCapabilityValue('alarm_water', data.waterPressureOK)
-    this.setCapabilityValue('measure_temperature.outdoor', data.outdoorTemperature)
+    this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
+    this.setCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
+    this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
+    this.setCapabilityValue('alarm_water', !data.waterPressureOK)
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {
