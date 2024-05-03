@@ -4,5 +4,8 @@
   },
   "0.0.2": {
     "en": "Fixes for refreshing access token"
+  },
+  "0.0.3": {
+    "en": "Added additional device capabilities"
   }
 }
