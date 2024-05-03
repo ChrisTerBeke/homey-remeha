@@ -5,7 +5,11 @@
   "class": "thermostat",
   "capabilities": [
     "target_temperature",
-    "measure_temperature"
+    "measure_temperature",
+    "measure_temperature_water",
+    "measure_temperature_outside",
+    "measure_pressure",
+    "alarm_water"
   ],
   "platforms": [
     "local"

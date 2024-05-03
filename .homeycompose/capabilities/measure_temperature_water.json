@@ -1,0 +1,14 @@
+{
+    "type": "number",
+    "title": {
+        "en": "Hot Water",
+        "nl": "Warm Water"
+    },
+    "uiComponent": "sensor",
+    "icon": "/assets/capabilities/temperature.svg",
+    "getable": true,
+    "setable": false,
+    "units": {
+        "en": "°C"
+    }
+}
