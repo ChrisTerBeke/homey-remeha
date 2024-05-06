@@ -17,7 +17,7 @@ export class RemehaAuth {
     private _clientID = '6ce007c6-0628-419e-88f4-bee2e6418eec'
     private _scopes = 'openid https://bdrb2cprod.onmicrosoft.com/iotdevice/user_impersonation offline_access'
     private _product = 'B2C_1A_RPSignUpSignInNewRoomv3.1'
-    private _fetch = fetchCookie(nodeFetch)
+    private _cookieFetch = fetchCookie(nodeFetch)
 
     public async login(email: string, password: string): Promise<TokenData> {
         const state = await this._generateState()
@@ -44,7 +44,7 @@ export class RemehaAuth {
         if (!requestID) throw new Error('Failed to get request ID')
 
         const cookies = loginFormResponse.headers.get('set-cookie')?.split(',')
-        const csrfToken = cookies?.find((cookie) => cookie.includes('x-ms-cpim-csrf'))?.split(';')[0].replace('x-ms-cpim-csrf=', '').trim()
+        const csrfToken = cookies?.find((cookie: string) => cookie.includes('x-ms-cpim-csrf'))?.split(';')[0].replace('x-ms-cpim-csrf=', '').trim()
         if (!csrfToken) throw new Error('Failed to get CSRF token')
 
         return {
@@ -222,5 +222,15 @@ export class RemehaAuth {
 
     private async _generateState(): Promise<string> {
         return await this._generateCodeVerifier()
+    }
+
+    private async _fetch(url: nodeFetch.RequestInfo, init?: nodeFetch.RequestInit): Promise<nodeFetch.Response> {
+        try {
+            const response = await this._cookieFetch(url, init)
+            return Promise.resolve(response)
+        }
+        catch (error) {
+            return Promise.reject(error)
+        }
     }
 }

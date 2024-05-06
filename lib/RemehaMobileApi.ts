@@ -79,22 +79,26 @@ export class RemehaMobileApi {
     }
 
     private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number } | undefined = undefined): Promise<any> {
-        const response = await fetch(`${this._rootURL}${path}`, {
-            method: method,
-            headers: {
-                'Authorization': `Bearer ${this._accessToken}`,
-                'Ocp-Apim-Subscription-Key': this._subscriptionKey,
-                'Content-Type': 'application/json',
-            },
-            body: data ? JSON.stringify(data) : undefined,
-        })
-        if (response.status !== 200) {
-            return
+        try {
+            const response = await fetch(`${this._rootURL}${path}`, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${this._accessToken}`,
+                    'Ocp-Apim-Subscription-Key': this._subscriptionKey,
+                    'Content-Type': 'application/json',
+                },
+                body: data ? JSON.stringify(data) : undefined,
+            })
+            if (response.status !== 200) {
+                return
+            }
+            const responseBody = await response.text()
+            if (responseBody.length > 0) {
+                return JSON.parse(responseBody)
+            }
+            return responseBody
+        } catch (error) {
+            return Promise.reject(error)
         }
-        const responseBody = await response.text()
-        if (responseBody.length > 0) {
-            return JSON.parse(responseBody)
-        }
-        return responseBody
     }
 }

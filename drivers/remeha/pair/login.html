@@ -6,7 +6,7 @@
         Homey.emit('login', `${email}:${password}`).then(() => {
             Homey.showView('list_devices')
         }).catch(error => {
-            Homey.showAlert('error', 'An error occurred')
+            console.log(error)
         }).finally(() => {
             Homey.hideLoadingOverlay()
         })
