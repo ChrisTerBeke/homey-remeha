@@ -33,6 +33,7 @@
   "bugs": {
     "url": "https://github.com/ChrisTerBeke/homey-remeha/issues"
   },
+  "homeyCommunityTopicId": 109529,
   "drivers": [
     {
       "name": {
