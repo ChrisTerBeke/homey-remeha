@@ -75,6 +75,32 @@
           "template": "add_devices"
         }
       ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Debugging"
+          },
+          "children": [
+            {
+              "id": "debugEnabled",
+              "type": "checkbox",
+              "label": {
+                "en": "Enable debug data"
+              },
+              "value": false
+            },
+            {
+              "id": "apiData",
+              "type": "textarea",
+              "label": {
+                "en": "Last API response"
+              },
+              "value": "{}"
+            }
+          ]
+        }
+      ],
       "id": "remeha"
     }
   ],

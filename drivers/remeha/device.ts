@@ -64,6 +64,13 @@ class RemehaThermostatDevice extends Device {
     } catch (error) {
       this.setUnavailable('Could not find thermostat data')
     }
+
+    try {
+      const { debugEnabled } = this.getSettings()
+      if (!debugEnabled) return
+      const debug = await this._client.debug()
+      this.setSettings({ apiData: JSON.stringify(debug) })
+    } catch (error) {}
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {

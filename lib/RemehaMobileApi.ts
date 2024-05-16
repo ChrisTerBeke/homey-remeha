@@ -68,6 +68,10 @@ export class RemehaMobileApi {
             }
         })
     }
+    
+    public async debug(): Promise<any> {
+        return await this._call('/homes/dashboard')
+    }
 
     public async device(climateZoneId: string): Promise<DeviceData | undefined> {
         const devices = await this.devices()
