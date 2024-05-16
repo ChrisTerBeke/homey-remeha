@@ -24,7 +24,7 @@ export class RemehaAuth {
         const { codeVerifier, codeChallenge } = await this._generatePKCE()
         const { requestID, csrfToken } = await this._loginFormStep(state, codeChallenge)
         await this._loginSubmitStep(requestID, csrfToken, email, password)
-        const { authorizationCode} = await this._confirmStep(requestID, csrfToken)
+        const { authorizationCode } = await this._confirmStep(requestID, csrfToken)
         const tokenData = await this._tokenStep(authorizationCode, codeVerifier)
         return tokenData
     }
