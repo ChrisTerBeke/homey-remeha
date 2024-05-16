@@ -1,2 +1,11 @@
 Unofficial support for Remeha Home.
-Currently only the Remeha Mercuria Ace is tested.
+
+Tested Remeha boilers and pumps:
+
+- Mercuria Ace (no known issues)
+- Ace 28c (no known issues)
+
+Devices with known issues:
+
+- Tzerra M39C (missing data)
+- Elsa Ace (failing sign in flow)

@@ -50,15 +50,27 @@ class RemehaThermostatDevice extends Device {
     const { accessToken } = this.getStore()
     this._client.setAccessToken(accessToken)
     const { id } = this.getData()
-    const data = await this._client.device(id)
-    if (!data) return this.setUnavailable('Could not find thermostat data')
-    this.setAvailable()
-    this.setCapabilityValue('measure_temperature', data.temperature)
-    this.setCapabilityValue('target_temperature', data.targetTemperature)
-    this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
-    this.setCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
-    this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
-    this.setCapabilityValue('alarm_water', !data.waterPressureOK)
+
+    try {
+      const data = await this._client.device(id)
+      if (!data) return this.setUnavailable('Could not find thermostat data')
+      this.setAvailable()
+      this.setCapabilityValue('measure_temperature', data.temperature)
+      this.setCapabilityValue('target_temperature', data.targetTemperature)
+      this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
+      this.setCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
+      this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
+      this.setCapabilityValue('alarm_water', !data.waterPressureOK)
+    } catch (error) {
+      this.setUnavailable('Could not find thermostat data')
+    }
+
+    try {
+      const { debugEnabled } = this.getSettings()
+      if (!debugEnabled) return
+      const debug = await this._client.debug()
+      this.setSettings({ apiData: JSON.stringify(debug) })
+    } catch (error) {}
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {
@@ -67,20 +79,30 @@ class RemehaThermostatDevice extends Device {
     const { accessToken } = this.getStore()
     this._client.setAccessToken(accessToken)
     const { id } = this.getData()
-    await this._client.setTargetTemperature(id, value)
+
+    try {
+      await this._client.setTargetTemperature(id, value)
+    } catch (error) {
+      this.setUnavailable('Could set target temperature')
+    }
   }
 
   private async _refreshAccessToken(): Promise<void> {
     const authorizer = new RemehaAuth()
     const { accessToken, refreshToken } = this.getStore()
-    const decodedAccessToken = this._parseJwt(accessToken)
-    if (decodedAccessToken.exp * 1000 > Date.now()) return
-    const tokenData = await authorizer.refreshAccessToken(refreshToken)
-    await this.setStoreValue('accessToken', tokenData.accessToken)
-    await this.setStoreValue('refreshToken', tokenData.refreshToken)
+
+    try {
+      const decodedAccessToken = this._parseJwt(accessToken)
+      if (decodedAccessToken.exp * 1000 > Date.now()) return
+      const tokenData = await authorizer.refreshAccessToken(refreshToken)
+      await this.setStoreValue('accessToken', tokenData.accessToken)
+      await this.setStoreValue('refreshToken', tokenData.refreshToken)
+    } catch (error) {
+      this.setUnavailable('Could not refresh access token')
+    }
   }
 
-  private _parseJwt(token: string): {exp: number} {
+  private _parseJwt(token: string): { exp: number } {
     return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
   }
 }
