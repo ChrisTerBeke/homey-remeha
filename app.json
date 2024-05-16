@@ -79,14 +79,16 @@
         {
           "type": "group",
           "label": {
-            "en": "Debugging"
+            "en": "Troubleshooting",
+            "nl": "Probleemoplossing"
           },
           "children": [
             {
               "id": "debugEnabled",
               "type": "checkbox",
               "label": {
-                "en": "Enable debug data"
+                "en": "Enable debug data",
+                "nl": "Schakel probleemverhelping in"
               },
               "value": false
             },
@@ -94,7 +96,8 @@
               "id": "apiData",
               "type": "textarea",
               "label": {
-                "en": "Last API response"
+                "en": "Last API response",
+                "nl": "Laatste API-reactie"
               },
               "value": "{}"
             }
