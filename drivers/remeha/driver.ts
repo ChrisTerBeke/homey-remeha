@@ -8,30 +8,21 @@ class RemehaDriver extends Driver {
   private _tokenData: TokenData | null = null
 
   async onPair(session: PairSession) {
+    session.setHandler('login', this._login.bind(this))
+    session.setHandler('list_devices', this._listDevices.bind(this))
+  }
 
-    const driver = this
+  private async _login(credentials: string): Promise<void> {
+    const authorizer = new RemehaAuth()
+    const [email, password] = credentials.split(':')
+    await authorizer.login(email, password)
+  }
 
-    session.setHandler('login', async function (credentials: string): Promise<boolean> {
-      const authorizer = new RemehaAuth()
-      const [email, password] = credentials.split(':')
-      try {
-        driver._tokenData = await authorizer.login(email, password)
-        return true
-      } catch (error) {
-        return false
-      }
-    })
-
-    session.setHandler('list_devices', async function (): Promise<any[]> {
-      if (!driver._tokenData || !driver._tokenData.accessToken) return []
-      const api = new RemehaMobileApi(driver._tokenData.accessToken)
-      try {
-        const devices = await api.devices()
-        return devices.map(driver._mapDevice.bind(driver))
-      } catch (error) {
-        return []
-      }
-    })
+  private async _listDevices(): Promise<any[]> {
+    if (!this._tokenData || !this._tokenData.accessToken) return []
+    const api = new RemehaMobileApi(this._tokenData.accessToken)
+    const devices = await api.devices()
+    return devices.map(this._mapDevice.bind(this))
   }
 
   private _mapDevice(device: DeviceData): any {
