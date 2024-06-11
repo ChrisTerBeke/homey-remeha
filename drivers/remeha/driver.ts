@@ -12,10 +12,10 @@ class RemehaDriver extends Driver {
     session.setHandler('list_devices', this._listDevices.bind(this))
   }
 
-  private async _login(credentials: string): Promise<void> {
+  private async _login(credentials: string): Promise<any> {
     const authorizer = new RemehaAuth()
     const [email, password] = credentials.split(':')
-    await authorizer.login(email, password)
+    this._tokenData = await authorizer.login(email, password)
   }
 
   private async _listDevices(): Promise<any[]> {
