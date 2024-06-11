@@ -13,5 +13,8 @@
   },
   "0.0.5": {
     "en": "Handle networking errors and add debugging feature"
+  },
+  "0.0.6": {
+    "en": "Additional debug for pairing, fix reported crashes"
   }
 }
