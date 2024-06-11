@@ -1,3 +1,4 @@
 {
-  "extends": "athom/homey-app"
+  "extends": "athom/homey-app",
+  "strict": "off"
 }

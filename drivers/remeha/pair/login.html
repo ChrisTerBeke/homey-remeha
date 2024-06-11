@@ -3,15 +3,10 @@
         var email = document.getElementById('email').value
         var password = document.getElementById('password').value
         Homey.showLoadingOverlay()
-        Homey.emit('login', `${email}:${password}`).then((success) => {
-            if (success) {
-                Homey.showView('list_devices')
-            } else {
-                Homey.alert(Homey.__('pair.login_error'), 'error')
-                Homey.done()
-            }
+        Homey.emit('login', `${email}:${password}`).then(() => {
+          Homey.showView('list_devices')
         }).catch(error => {
-            Homey.alert(Homey.__('pair.login_error'), 'error')
+            Homey.alert(error.message, 'error')
             Homey.done()
         }).finally(() => {
             Homey.hideLoadingOverlay()

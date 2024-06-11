@@ -26,10 +26,6 @@ class RemehaThermostatDevice extends Device {
     this._init()
   }
 
-  async onDeleted(): Promise<void> {
-    this._uninit()
-  }
-
   private async _init(): Promise<void> {
     const { accessToken } = this.getStore()
     this._client = new RemehaMobileApi(accessToken)
@@ -38,7 +34,6 @@ class RemehaThermostatDevice extends Device {
   }
 
   async _uninit(): Promise<void> {
-    this.setUnavailable()
     clearInterval(this._syncInterval as NodeJS.Timeout)
     this._syncInterval = undefined
     this._client = undefined
@@ -70,7 +65,7 @@ class RemehaThermostatDevice extends Device {
       if (!debugEnabled) return
       const debug = await this._client.debug()
       this.setSettings({ apiData: JSON.stringify(debug) })
-    } catch (error) {}
+    } catch (error) { }
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {
