@@ -16,5 +16,8 @@
   },
   "0.0.6": {
     "en": "Additional debug for pairing, fix reported crashes"
+  },
+  "0.0.7": {
+    "en": "Remove unused translation, update README"
   }
 }
