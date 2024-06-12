@@ -1,10 +1,9 @@
 {
-    "pair": {
-        "title": "Remeha Home",
-        "description": "Please enter your Remeha Home username and password. These are the same credentials you use to sign into the Remeha Home app.",
-        "email": "Email address",
-        "password": "Password",
-        "submit": "Sign In",
-        "login_error": "An error occured while trying to sign into Remeha Home. Please try again or contact the developer if it keeps happening."
-    }
+  "pair": {
+    "title": "Remeha Home",
+    "description": "Please enter your Remeha Home username and password. These are the same credentials you use to sign into the Remeha Home app.",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign In"
+  }
 }
