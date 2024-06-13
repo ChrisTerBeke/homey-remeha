@@ -9,7 +9,6 @@
             })
             .catch(error => {
                 Homey.alert(error.message, 'error')
-                Homey.done()
             })
             .finally(() => {
                 Homey.hideLoadingOverlay()
