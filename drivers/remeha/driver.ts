@@ -15,6 +15,7 @@ class RemehaDriver extends Driver {
   private async _login(credentials: string): Promise<any> {
     const authorizer = new RemehaAuth()
     const [email, password] = credentials.split(':')
+    if (!email || !password) throw new Error('Invalid credentials')
     this._tokenData = await authorizer.login(email, password)
   }
 
