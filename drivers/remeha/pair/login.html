@@ -3,14 +3,17 @@
         var email = document.getElementById('email').value
         var password = document.getElementById('password').value
         Homey.showLoadingOverlay()
-        Homey.emit('login', `${email}:${password}`).then(() => {
-          Homey.showView('list_devices')
-        }).catch(error => {
-            Homey.alert(error.message, 'error')
-            Homey.done()
-        }).finally(() => {
-            Homey.hideLoadingOverlay()
-        })
+        Homey.emit('login', `${email}|${password}`)
+            .then(() => {
+                Homey.showView('list_devices')
+            })
+            .catch(error => {
+                Homey.alert(error.message, 'error')
+                Homey.done()
+            })
+            .finally(() => {
+                Homey.hideLoadingOverlay()
+            })
     }
 </script>
 
