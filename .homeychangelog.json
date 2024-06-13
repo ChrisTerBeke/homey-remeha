@@ -19,5 +19,8 @@
   },
   "0.0.7": {
     "en": "Remove unused translation, update README"
+  },
+  "0.0.8": {
+    "en": "Caught possible issues when signing in"
   }
 }
