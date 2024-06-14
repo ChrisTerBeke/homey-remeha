@@ -1,9 +1,14 @@
 {
-  "pair": {
-    "title": "Remeha Home",
-    "description": "Please enter your Remeha Home username and password. These are the same credentials you use to sign into the Remeha Home app.",
-    "email": "Email address",
-    "password": "Password",
-    "submit": "Sign In"
-  }
+    "pair": {
+        "title": "Remeha Home",
+        "description": "Please enter your Remeha Home username and password. These are the same credentials you use to sign into the Remeha Home app.",
+        "email": "Email address",
+        "password": "Password",
+        "submit": "Sign In"
+    },
+    "settings": {
+        "title": "Settings",
+        "debug_token_label": "Debug: login token",
+        "debug_devices_label": "Debug: devices"
+    }
 }

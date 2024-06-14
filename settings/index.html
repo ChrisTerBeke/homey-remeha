@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+    <script type="text/javascript">
+        function onHomeyReady(Homey) {
+	        Homey.ready()
+
+	        Homey.get('debug_token', function (err, debug_token) {
+	      		if (err) return Homey.alert(err)
+	          	document.getElementById('debug_token').value = debug_token
+	        })
+
+			Homey.get('debug_devices', function (err, debug_devices) {
+	      		if (err) return Homey.alert(err)
+	          	document.getElementById('debug_devices').value = debug_devices
+	        })
+        }
+    </script>
+    </head>
+    <body>
+        <header class="homey-header">
+            <h1 class="homey-title" data-i18n="settings.title"></h1>
+        </header>
+
+        <div class="homey-form-group">
+	        <label class="homey-form-label" data-i18n="settings.debug_token_label"></label>
+	        <textarea class="homey-form-textarea" id="debug_token"></textarea>
+        </div>
+
+        <div class="homey-form-group">
+	        <label class="homey-form-label" data-i18n="settings.debug_devices_label"></label>
+	        <textarea class="homey-form-textarea" id="debug_devices"></textarea>
+        </div>
+    </body>
+</html>
