@@ -25,5 +25,8 @@
   },
   "0.0.9": {
     "en": "Added debug capabilities to pairing flow"
+  },
+  "0.0.10": {
+    "en": "Fix device pairing flow debugging"
   }
 }
