@@ -23,9 +23,9 @@ class RemehaDriver extends Driver {
     private async _listDevices(): Promise<any[]> {
         if (!this._tokenData || !this._tokenData.accessToken) return []
         const api = new RemehaMobileApi(this._tokenData.accessToken)
-        const devices = await api.devices()
         const debug = await api.debug()
         this.homey.settings.set('debug_devices', JSON.stringify(debug))
+        const devices = await api.devices()
         return devices.map(this._mapDevice.bind(this))
     }
 
