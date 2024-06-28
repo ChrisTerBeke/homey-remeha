@@ -31,5 +31,8 @@
   },
   "0.1.0": {
     "en": "Read heating mode, fix setpoint when in manual mode"
+  },
+  "0.1.1": {
+    "en": "Fix setpoint temporary override"
   }
 }
