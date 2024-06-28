@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 export type DeviceData = {
     id: string
     name: string
+    mode: string
     temperature: number
     targetTemperature: number
     waterPressure: number
@@ -17,6 +18,7 @@ type ResponseClimateZone = {
     name: string
     roomTemperature: number
     setPoint: number
+    zoneMode: string
 }
 
 type ResponseHotWaterZone = {
@@ -61,6 +63,7 @@ export class RemehaMobileApi {
         const deviceData: DeviceData = {
             id: appliance.climateZones[0].climateZoneId,
             name: appliance.climateZones[0].name,
+            mode: appliance.climateZones[0].zoneMode,
             temperature: appliance.climateZones[0].roomTemperature,
             targetTemperature: appliance.climateZones[0].setPoint,
             waterPressure: appliance.waterPressure,
@@ -87,7 +90,17 @@ export class RemehaMobileApi {
     }
 
     public async setTargetTemperature(climateZoneID: string, roomTemperatureSetPoint: number): Promise<void> {
-        await this._call(`/climate-zones/${climateZoneID}/modes/temporary-override`, 'POST', { roomTemperatureSetPoint })
+        const device = await this.device(climateZoneID)
+        if (!device) return
+        switch (device.mode) {
+            case "Scheduling":
+            case "TemporaryOverride":
+                await this._call(`/climate-zones/${climateZoneID}/modes/temporary-override`, 'POST', { roomTemperatureSetPoint })
+            case "Manual":
+                await this._call(`/climate-zones/${climateZoneID}/modes/manual`, 'POST', { roomTemperatureSetPoint })
+            default:
+                await this._call(`/climate-zones/${climateZoneID}/modes/manual`, 'POST', { roomTemperatureSetPoint })
+        }
     }
 
     private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number } | undefined = undefined): Promise<any> {

@@ -10,10 +10,10 @@ class RemehaThermostatDevice extends Device {
     private _client?: RemehaMobileApi
 
     async onInit(): Promise<void> {
-        this.addCapability('measure_temperature_water')
         this.addCapability('measure_temperature_outside')
         this.addCapability('measure_pressure')
         this.addCapability('alarm_water')
+        this.addCapability('mode')
         this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
         this._init()
     }
@@ -42,8 +42,6 @@ class RemehaThermostatDevice extends Device {
     private async _syncAttributes(): Promise<void> {
         await this._refreshAccessToken()
         if (!this._client) return this.setUnavailable('No Remeha Home client')
-        const { accessToken } = this.getStore()
-        this._client.setAccessToken(accessToken)
         const { id } = this.getData()
 
         try {
@@ -52,10 +50,26 @@ class RemehaThermostatDevice extends Device {
             this.setAvailable()
             this.setCapabilityValue('measure_temperature', data.temperature)
             this.setCapabilityValue('target_temperature', data.targetTemperature)
-            this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
             this.setCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
             this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
             this.setCapabilityValue('alarm_water', !data.waterPressureOK)
+            this.setCapabilityValue('mode', data.mode)
+
+            // optional when hot water zone is configured
+            if (data.waterTemperature) {
+                this.addCapability('measure_temperature_water')
+                this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
+            } else {
+                this.removeCapability('measure_temperature_water')
+            }
+
+            // optional when hot water zone is configured
+            if (data.targetWaterTemperature) {
+                this.setCapabilityValue('target_temperature_water', data.targetWaterTemperature)
+                this.addCapability('target_temperature_water')
+            } else {
+                this.removeCapability('target_temperature_water')
+            }
         } catch (error) {
             this.setUnavailable('Could not find thermostat data')
         }
@@ -71,8 +85,6 @@ class RemehaThermostatDevice extends Device {
     private async _setTargetTemperature(value: number): Promise<void> {
         await this._refreshAccessToken()
         if (!this._client) return this.setUnavailable('No Remeha Home client')
-        const { accessToken } = this.getStore()
-        this._client.setAccessToken(accessToken)
         const { id } = this.getData()
 
         try {
@@ -82,23 +94,23 @@ class RemehaThermostatDevice extends Device {
         }
     }
 
+    private async _setTargetWaterTemperature(value: number): Promise<void> {
+        // TODO
+    }
+
     private async _refreshAccessToken(): Promise<void> {
         const authorizer = new RemehaAuth()
         const { accessToken, refreshToken } = this.getStore()
-
         try {
-            const decodedAccessToken = this._parseJwt(accessToken)
-            if (decodedAccessToken.exp * 1000 > Date.now()) return
+            if (!authorizer.isAccessTokenExpired(accessToken)) return
             const tokenData = await authorizer.refreshAccessToken(refreshToken)
             await this.setStoreValue('accessToken', tokenData.accessToken)
             await this.setStoreValue('refreshToken', tokenData.refreshToken)
+            if (!this._client) return this.setUnavailable('No Remeha Home client')
+            this._client.setAccessToken(tokenData.accessToken)
         } catch (error) {
             this.setUnavailable('Could not refresh access token')
         }
-    }
-
-    private _parseJwt(token: string): { exp: number } {
-        return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
     }
 }
 
