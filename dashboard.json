@@ -10,17 +10,17 @@
             "errorStatus": "Running",
             "activeThermalMode": "HeatingCH",
             "operatingMode": "AutomaticCoolingHeating",
-            "outdoorTemperature": 15.5,
+            "outdoorTemperature": 20,
             "outdoorTemperatureSource": "Wired",
             "outdoorTemperatureInformation": {
                 "outdoorTemperatureSource": "Wired",
                 "internetOutdoorTemperature": null,
-                "applianceOutdoorTemperature": 15.5,
+                "applianceOutdoorTemperature": 20,
                 "utilizeOutdoorTemperature": null,
                 "internetOutdoorTemperatureExpected": false,
                 "isDayTime": true,
                 "weatherCode": "normal cloudy",
-                "cloudOutdoorTemperature": 14,
+                "cloudOutdoorTemperature": 17,
                 "cloudOutdoorTemperatureStatus": "Ok"
             },
             "currentTimestamp": null,
@@ -34,7 +34,7 @@
                 "mode": "NotAvailable",
                 "status": "NotAvailable"
             },
-            "waterPressure": 0.8,
+            "waterPressure": 0.9,
             "waterPressureOK": true,
             "capabilityEnergyConsumption": true,
             "capabilityCooling": true,
@@ -58,7 +58,7 @@
                     "dhwType": "Tank",
                     "nextSwitchActivity": "Reduced",
                     "capabilityBoostMode": true,
-                    "dhwTemperature": 43.1,
+                    "dhwTemperature": 44.4,
                     "targetSetpoint": 50,
                     "reducedSetpoint": 10,
                     "comfortSetPoint": 50,
@@ -72,7 +72,7 @@
                     },
                     "boostDuration": "00:30",
                     "boostModeEndTime": "0001-01-01T00:00:00Z",
-                    "nextSwitchTime": "2024-05-01T23:30:00Z",
+                    "nextSwitchTime": "2024-06-28T23:30:00Z",
                     "activeDwhTimeProgramNumber": 1
                 }
             ],
@@ -88,10 +88,10 @@
                     "controlStrategy": "OutdoorTemperatureOnly",
                     "firePlaceModeActive": false,
                     "capabilityFirePlaceMode": true,
-                    "roomTemperature": 22.5,
+                    "roomTemperature": 26,
                     "setPoint": 21,
                     "nextSetpoint": 21,
-                    "nextSwitchTime": "2024-05-01T22:00:00Z",
+                    "nextSwitchTime": "2024-06-28T22:00:00Z",
                     "setPointMin": 5,
                     "setPointMax": 30,
                     "currentScheduleSetPoint": 21,
@@ -103,7 +103,7 @@
                         "active": false
                     },
                     "temporaryOverride": {
-                        "endTime": "0001-01-01T00:00:00Z"
+                        "endTime": "2024-06-28T22:00:00Z"
                     }
                 }
             ]
