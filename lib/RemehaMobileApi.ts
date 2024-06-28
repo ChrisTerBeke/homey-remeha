@@ -92,18 +92,15 @@ export class RemehaMobileApi {
     public async setTargetTemperature(climateZoneID: string, roomTemperatureSetPoint: number): Promise<void> {
         const device = await this.device(climateZoneID)
         if (!device) return
-        switch (device.mode) {
-            case "Scheduling":
-            case "TemporaryOverride":
-                await this._call(`/climate-zones/${climateZoneID}/modes/temporary-override`, 'POST', { roomTemperatureSetPoint })
-            case "Manual":
-                await this._call(`/climate-zones/${climateZoneID}/modes/manual`, 'POST', { roomTemperatureSetPoint })
-            default:
-                await this._call(`/climate-zones/${climateZoneID}/modes/manual`, 'POST', { roomTemperatureSetPoint })
+        if (device.mode == "Manual") {
+            await this._call(`/climate-zones/${climateZoneID}/modes/manual`, 'POST', { roomTemperatureSetPoint })
+        } else {
+            await this._call(`/climate-zones/${climateZoneID}/modes/temporary-override`, 'POST', { roomTemperatureSetPoint })
         }
     }
 
     private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number } | undefined = undefined): Promise<any> {
+        console.log('call', path, method, data)
         try {
             const response = await fetch(`${this._rootURL}${path}`, {
                 method: method,
@@ -118,6 +115,7 @@ export class RemehaMobileApi {
                 return
             }
             const responseBody = await response.text()
+            console.log('response', responseBody)
             if (responseBody.length > 0) {
                 return JSON.parse(responseBody)
             }
