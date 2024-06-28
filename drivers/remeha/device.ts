@@ -54,22 +54,8 @@ class RemehaThermostatDevice extends Device {
             this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
             this.setCapabilityValue('alarm_water', !data.waterPressureOK)
             this.setCapabilityValue('mode', data.mode)
-
-            // optional when hot water zone is configured
-            if (data.waterTemperature) {
-                this.addCapability('measure_temperature_water')
-                this.setCapabilityValue('measure_temperature_water', data.waterTemperature)
-            } else {
-                this.removeCapability('measure_temperature_water')
-            }
-
-            // optional when hot water zone is configured
-            if (data.targetWaterTemperature) {
-                this.setCapabilityValue('target_temperature_water', data.targetWaterTemperature)
-                this.addCapability('target_temperature_water')
-            } else {
-                this.removeCapability('target_temperature_water')
-            }
+            this._setOptionalCapability('measure_temperature_water', data.waterTemperature)
+            this._setOptionalCapability('target_temperature_water', data.targetWaterTemperature)
         } catch (error) {
             this.setUnavailable('Could not find thermostat data')
         }
@@ -80,6 +66,15 @@ class RemehaThermostatDevice extends Device {
             const debug = await this._client.debug()
             this.setSettings({ apiData: JSON.stringify(debug) })
         } catch (error) { }
+    }
+
+    private _setOptionalCapability(capability: string, value: number | boolean | string | undefined | null): void {
+        if (value) {
+            this.addCapability(capability)
+            this.setCapabilityValue(capability, value)
+        } else {
+            this.removeCapability(capability)
+        }
     }
 
     private async _setTargetTemperature(value: number): Promise<void> {
