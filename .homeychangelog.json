@@ -28,5 +28,8 @@
   },
   "0.0.10": {
     "en": "Fix device pairing flow debugging"
+  },
+  "0.1.0": {
+    "en": "Read heating mode, fix setpoint when in manual mode"
   }
 }
