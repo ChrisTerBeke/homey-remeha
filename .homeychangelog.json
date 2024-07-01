@@ -37,5 +37,8 @@
   },
   "0.1.2": {
     "en": "Fix setting optional capabilities"
+  },
+  "0.1.3": {
+    "en": "Fix setting value of optional capabilities"
   }
 }
