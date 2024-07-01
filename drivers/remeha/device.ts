@@ -68,9 +68,9 @@ class RemehaThermostatDevice extends Device {
         } catch (error) { }
     }
 
-    private _setOptionalCapability(capability: string, value: number | boolean | string | undefined | null): void {
+    private async _setOptionalCapability(capability: string, value: number | boolean | string | undefined | null): Promise<void> {
         if (value) {
-            this.addCapability(capability)
+            await this.addCapability(capability)
             this.setCapabilityValue(capability, value)
         } else {
             this.removeCapability(capability)
