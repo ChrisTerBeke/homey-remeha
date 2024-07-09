@@ -1,0 +1,10 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Fireplace mode",
+        "nl": "Openhaardmodus"
+    },
+    "uiComponent": "button",
+    "getable": true,
+    "setable": true
+}

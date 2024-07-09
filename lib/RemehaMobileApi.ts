@@ -1,5 +1,11 @@
 import fetch from 'node-fetch'
 
+export type DeviceCapabilities = {
+    fireplaceMode: boolean
+    outdoorTemperature: boolean
+    hotWaterZone: boolean
+}
+
 export type DeviceData = {
     id: string
     name: string
@@ -8,9 +14,10 @@ export type DeviceData = {
     targetTemperature: number
     waterPressure: number
     waterPressureOK: boolean
-    outdoorTemperature: number
+    outdoorTemperature?: number
     waterTemperature?: number
     targetWaterTemperature?: number
+    fireplaceMode?: boolean
 }
 
 type ResponseClimateZone = {
@@ -19,6 +26,8 @@ type ResponseClimateZone = {
     roomTemperature: number
     setPoint: number
     zoneMode: string
+    capabilityFirePlaceMode: boolean
+    firePlaceModeActive?: boolean
 }
 
 type ResponseHotWaterZone = {
@@ -28,11 +37,13 @@ type ResponseHotWaterZone = {
 }
 
 type ResponseAppliance = {
+    applianceId: string
     climateZones: ResponseClimateZone[]
     hotWaterZones: ResponseHotWaterZone[]
-    outdoorTemperature: number
     waterPressure: number
     waterPressureOK: boolean
+    capabilityOutdoorTemperature: boolean
+    outdoorTemperature?: number
 }
 
 type DashboardResponse = {
@@ -54,39 +65,31 @@ export class RemehaMobileApi {
     }
 
     public async devices(): Promise<DeviceData[]> {
-        const dashboard = await this._call('/homes/dashboard') as DashboardResponse
+        const dashboard = await this._getDashboard()
         if (!dashboard?.appliances) return []
         return dashboard.appliances.map(this._createDeviceData)
     }
 
-    private _createDeviceData(appliance: ResponseAppliance): DeviceData {
-        const deviceData: DeviceData = {
-            id: appliance.climateZones[0].climateZoneId,
-            name: appliance.climateZones[0].name,
-            mode: appliance.climateZones[0].zoneMode,
-            temperature: appliance.climateZones[0].roomTemperature,
-            targetTemperature: appliance.climateZones[0].setPoint,
-            waterPressure: appliance.waterPressure,
-            waterPressureOK: appliance.waterPressureOK,
-            outdoorTemperature: appliance.outdoorTemperature,
-        }
-
-        // not every installation has a hot water zone, for example in Hybrid heat pumps
-        if (appliance.hotWaterZones.length > 0) {
-            deviceData.waterTemperature = appliance.hotWaterZones[0].dhwTemperature
-            deviceData.targetWaterTemperature = appliance.hotWaterZones[0].targetSetpoint
-        }
-
-        return deviceData
+    public async device(climateZoneId: string): Promise<DeviceData | undefined> {
+        const devices = await this.devices()
+        return devices.find(device => device.id === climateZoneId)
     }
 
     public async debug(): Promise<any> {
         return await this._call('/homes/dashboard')
     }
 
-    public async device(climateZoneId: string): Promise<DeviceData | undefined> {
-        const devices = await this.devices()
-        return devices.find(device => device.id === climateZoneId)
+    public async capabilities(climateZoneId: string): Promise<DeviceCapabilities | undefined> {
+        const dashboard = await this._getDashboard()
+        if (!dashboard?.appliances) return undefined
+        const appliance = dashboard.appliances.find(appliance => appliance.climateZones[0].climateZoneId === climateZoneId)
+        if (!appliance) return undefined
+
+        return {
+            fireplaceMode: appliance.climateZones[0].capabilityFirePlaceMode,
+            outdoorTemperature: appliance.capabilityOutdoorTemperature,
+            hotWaterZone: appliance.hotWaterZones.length > 0,
+        }
     }
 
     public async setTargetTemperature(climateZoneID: string, roomTemperatureSetPoint: number): Promise<void> {
@@ -99,8 +102,16 @@ export class RemehaMobileApi {
         }
     }
 
-    private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number } | undefined = undefined): Promise<any> {
-        console.log('call', path, method, data)
+    public async setFireplaceMode(climateZoneID: string, fireplaceModeActive: boolean): Promise<void> {
+        await this._call(`/climate-zones/${climateZoneID}/modes/fireplacemode`, 'POST', { fireplaceModeActive })
+    }
+
+    public async _getDashboard(): Promise<DashboardResponse> {
+        const dashboard = await this._call('/homes/dashboard') as DashboardResponse
+        return dashboard
+    }
+
+    private async _call(path: string, method: string = 'GET', data: { [key: string]: string | number | boolean } | undefined = undefined): Promise<any> {
         try {
             const response = await fetch(`${this._rootURL}${path}`, {
                 method: method,
@@ -115,7 +126,6 @@ export class RemehaMobileApi {
                 return
             }
             const responseBody = await response.text()
-            console.log('response', responseBody)
             if (responseBody.length > 0) {
                 return JSON.parse(responseBody)
             }
@@ -123,5 +133,35 @@ export class RemehaMobileApi {
         } catch (error) {
             return Promise.reject(error)
         }
+    }
+
+    private _createDeviceData(appliance: ResponseAppliance): DeviceData {
+        const deviceData: DeviceData = {
+            id: appliance.climateZones[0].climateZoneId,
+            name: appliance.climateZones[0].name,
+            mode: appliance.climateZones[0].zoneMode,
+            temperature: appliance.climateZones[0].roomTemperature,
+            targetTemperature: appliance.climateZones[0].setPoint,
+            waterPressure: appliance.waterPressure,
+            waterPressureOK: appliance.waterPressureOK,
+        }
+
+        // not every installation supports outdoor temperature
+        if (appliance.capabilityOutdoorTemperature) {
+            deviceData.outdoorTemperature = appliance.outdoorTemperature
+        }
+
+        // not every installation supports fireplace mode
+        if (appliance.climateZones[0].capabilityFirePlaceMode) {
+            deviceData.fireplaceMode = appliance.climateZones[0].firePlaceModeActive
+        }
+
+        // not every installation has a hot water zone, for example in Hybrid heat pumps
+        if (appliance.hotWaterZones.length > 0) {
+            deviceData.waterTemperature = appliance.hotWaterZones[0].dhwTemperature
+            deviceData.targetWaterTemperature = appliance.hotWaterZones[0].targetSetpoint
+        }
+
+        return deviceData
     }
 }

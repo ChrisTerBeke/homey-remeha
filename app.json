@@ -108,6 +108,16 @@
     }
   ],
   "capabilities": {
+    "fireplace_mode": {
+      "type": "boolean",
+      "title": {
+        "en": "Fireplace mode",
+        "nl": "Openhaardmodus"
+      },
+      "uiComponent": "button",
+      "getable": true,
+      "setable": true
+    },
     "measure_temperature_outside": {
       "type": "number",
       "title": {
@@ -145,7 +155,6 @@
         "nl": "Modus"
       },
       "uiComponent": "sensor",
-      "icon": "/assets/capabilities/temperature.svg",
       "getable": true,
       "setable": false
     },

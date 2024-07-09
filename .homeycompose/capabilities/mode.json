@@ -5,7 +5,6 @@
         "nl": "Modus"
     },
     "uiComponent": "sensor",
-    "icon": "/assets/capabilities/temperature.svg",
     "getable": true,
     "setable": false
 }
