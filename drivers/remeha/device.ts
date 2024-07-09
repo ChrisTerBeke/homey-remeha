@@ -86,7 +86,6 @@ class RemehaThermostatDevice extends Device {
             this._setOptionalCapabilityValue('target_temperature_water', data.targetWaterTemperature)
             this._setOptionalCapabilityValue('fireplace_mode', data.fireplaceMode)
         } catch (error) {
-            console.log(error)
             this.setUnavailable('Could not find thermostat data')
         }
 
