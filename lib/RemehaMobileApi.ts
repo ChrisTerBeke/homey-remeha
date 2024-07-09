@@ -194,7 +194,7 @@ export class RemehaMobileApi {
             case 'Manual': return 'manual'
             case 'TemporaryOverride': return 'manual'
             case 'Scheduling': return 'auto'
-            case 'Off': return 'off'
+            case 'FrostProtection': return 'off'
             default: return 'off'
         }
     }
