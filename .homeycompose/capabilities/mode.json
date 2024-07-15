@@ -1,10 +1,33 @@
 {
-    "type": "string",
+    "type": "enum",
     "title": {
         "en": "Mode",
         "nl": "Modus"
     },
-    "uiComponent": "sensor",
+    "uiComponent": "picker",
     "getable": true,
-    "setable": false
+    "setable": true,
+    "values": [
+        {
+            "id": "off",
+            "title": {
+                "en": "Off (anti-frost)",
+                "nl": "Uit (anti-vorst)"
+            }
+        },
+        {
+            "id": "auto",
+            "title": {
+                "en": "Auto (schedule)",
+                "nl": "Automatisch (schema)"
+            }
+        },
+        {
+            "id": "manual",
+            "title": {
+                "en": "Manual",
+                "nl": "Handmatig"
+            }
+        }
+    ]
 }

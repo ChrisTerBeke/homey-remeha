@@ -51,6 +51,7 @@ class RemehaThermostatDevice extends Device {
             await this.addCapability('measure_pressure')
             await this.addCapability('alarm_water')
             await this.addCapability('mode')
+            this.registerCapabilityListener('mode', this._setMode.bind(this))
 
             // optional capabilities
             await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
@@ -123,6 +124,18 @@ class RemehaThermostatDevice extends Device {
         }
     }
 
+    private async _setMode(value: string): Promise<void> {
+        await this._refreshAccessToken()
+        if (!this._client) return this.setUnavailable('No Remeha Home client')
+        const { id } = this.getData()
+
+        try {
+            await this._client.setMode(id, value)
+        } catch (error) {
+            this.setUnavailable('Could not set operating mode')
+        }
+    }
+
     private async _setFireplaceMode(value: boolean): Promise<void> {
         await this._refreshAccessToken()
         if (!this._client) return this.setUnavailable('No Remeha Home client')
@@ -133,10 +146,6 @@ class RemehaThermostatDevice extends Device {
         } catch (error) {
             this.setUnavailable('Could not set fireplace mode')
         }
-    }
-
-    private async _setTargetWaterTemperature(value: number): Promise<void> {
-        // TODO
     }
 
     private async _refreshAccessToken(): Promise<void> {
