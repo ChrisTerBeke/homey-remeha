@@ -57,10 +57,7 @@ class RemehaThermostatDevice extends Device {
       await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
       await this._addOrRemoveCapability('target_temperature_water', capabilities.hotWaterZone)
       await this._addOrRemoveCapability('measure_temperature_outside', capabilities.outdoorTemperature)
-
-      // optional fireplace mode
-      await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this))
-      await this._addFlowCard('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this))
+      await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this), this._actionFireplaceMode.bind(this))
     } catch (error) {
       this.setUnavailable('Could not find capabilities')
     }
@@ -100,10 +97,11 @@ class RemehaThermostatDevice extends Device {
     } catch (error) { }
   }
 
-  private async _addOrRemoveCapability(capability: string, enabled: boolean, listener?: Device.CapabilityCallback): Promise<void> {
+  private async _addOrRemoveCapability(capability: string, enabled: boolean, listener?: Device.CapabilityCallback, flowActionListener?: FlowCard.RunCallback): Promise<void> {
     if (enabled) {
       await this.addCapability(capability)
       if (listener) this.registerCapabilityListener(capability, listener)
+      if (flowActionListener) await this._addFlowActionCard(capability, flowActionListener)
     } else {
       await this.removeCapability(capability)
     }
@@ -115,13 +113,9 @@ class RemehaThermostatDevice extends Device {
     }
   }
 
-  private async _addFlowCard(action: string, enabled: boolean, listener: FlowCard.RunCallback): Promise<void> {
-    if (!enabled) return
+  private async _addFlowActionCard(action: string, listener: FlowCard.RunCallback): Promise<void> {
     const actionCard = this.homey.flow.getActionCard(action)
-    actionCard.registerRunListener(async (args, state) => {
-      console.log("DEBUG", args, state)
-      await listener(args, state)
-    })
+    actionCard.registerRunListener(listener)
   }
 
   private async _setTargetTemperature(value: number): Promise<void> {
@@ -158,6 +152,11 @@ class RemehaThermostatDevice extends Device {
     } catch (error) {
       this.setUnavailable('Could not set fireplace mode')
     }
+  }
+
+  private async _actionFireplaceMode(args: any, state: any): Promise<void> {
+    console.log("DEBUG", args, state)
+    this._setFireplaceMode(args.enabled)
   }
 
   private async _refreshAccessToken(): Promise<void> {

@@ -9,7 +9,7 @@
       "tokens": [
         {
           "name": "enabled",
-          "type": "boolean",
+          "type": "checkbox",
           "title": {
             "en": "Enabled",
             "nl": "Ingeschakeld"

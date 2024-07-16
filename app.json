@@ -34,6 +34,38 @@
     "url": "https://github.com/ChrisTerBeke/homey-remeha/issues"
   },
   "homeyCommunityTopicId": 109529,
+  "flow": {
+    "actions": [
+      {
+        "id": "fireplace_mode",
+        "title": {
+          "en": "Fireplace mode",
+          "nl": "Openhaardmodus"
+        },
+        "tokens": [
+          {
+            "name": "enabled",
+            "type": "boolean",
+            "title": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            },
+            "example": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=remeha"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
