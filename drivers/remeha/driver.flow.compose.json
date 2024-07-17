@@ -1,10 +1,58 @@
 {
     "actions": [
         {
+            "id": "mode",
+            "title": {
+                "en": "Set mode to ...",
+                "nl": "Zet modus op ..."
+            },
+            "titleFormatted": {
+                "en": "Set mode to [[mode]]",
+                "nl": "Zet modus op [[mode]]"
+            },
+            "args": [
+                {
+                    "type": "dropdown",
+                    "name": "mode",
+                    "title": {
+                        "en": "Mode",
+                        "nl": "Modus"
+                    },
+                    "values": [
+                        {
+                            "id": "off",
+                            "title": {
+                                "en": "Off",
+                                "nl": "Uit"
+                            }
+                        },
+                        {
+                            "id": "auto",
+                            "title": {
+                                "en": "Auto (schedule)",
+                                "nl": "Automatisch (schema)"
+                            }
+                        },
+                        {
+                            "id": "manual",
+                            "title": {
+                                "en": "Manual",
+                                "nl": "Handmatig"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fireplace_mode",
             "title": {
-                "en": "Fireplace mode",
-                "nl": "Openhaardmodus"
+                "en": "Set fireplace mode to ...",
+                "nl": "Zet openhaardmodus op ..."
+            },
+            "titleFormatted": {
+                "en": "Set fireplace mode to [[enabled]]",
+                "nl": "Zet openhaardmodus op [[enabled]]"
             },
             "args": [
                 {

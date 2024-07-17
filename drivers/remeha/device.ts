@@ -46,12 +46,12 @@ class RemehaThermostatDevice extends Device {
 
             // required capabilities
             await this.addCapability('measure_temperature')
-            await this.addCapability('target_temperature')
-            this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
             await this.addCapability('measure_pressure')
             await this.addCapability('alarm_water')
-            await this.addCapability('mode')
-            this.registerCapabilityListener('mode', this._setMode.bind(this))
+
+            // required capabilities with listeners
+            await this._addOrRemoveCapability('mode', true, this._setMode.bind(this), this._actionMode.bind(this))
+            await this._addOrRemoveCapability('target_temperature', true, this._setTargetTemperature.bind(this))
 
             // optional capabilities
             await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
@@ -140,6 +140,10 @@ class RemehaThermostatDevice extends Device {
         } catch (error) {
             this.setUnavailable('Could not set operating mode')
         }
+    }
+
+    private async _actionMode(args: any, state: any): Promise<void> {
+        this._setMode(args.mode)
     }
 
     private async _setFireplaceMode(value: boolean): Promise<void> {
