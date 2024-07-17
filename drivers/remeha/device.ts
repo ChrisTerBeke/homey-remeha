@@ -57,6 +57,8 @@ class RemehaThermostatDevice extends Device {
             await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('target_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('measure_temperature_outside', capabilities.outdoorTemperature)
+
+            // optional capabilities with listeners
             await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this), this._actionFireplaceMode.bind(this))
         } catch (error) {
             this.setUnavailable('Could not find capabilities')
