@@ -42,25 +42,19 @@
           "en": "Fireplace mode",
           "nl": "Openhaardmodus"
         },
-        "tokens": [
-          {
-            "name": "enabled",
-            "type": "boolean",
-            "title": {
-              "en": "Enabled",
-              "nl": "Ingeschakeld"
-            },
-            "example": {
-              "en": "Enabled",
-              "nl": "Ingeschakeld"
-            }
-          }
-        ],
         "args": [
           {
             "type": "device",
             "name": "device",
             "filter": "driver_id=remeha"
+          },
+          {
+            "type": "checkbox",
+            "name": "enabled",
+            "title": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            }
           }
         ]
       }

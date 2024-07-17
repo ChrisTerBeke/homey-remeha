@@ -1,25 +1,21 @@
 {
-  "actions": [
-    {
-      "id": "fireplace_mode",
-      "title": {
-        "en": "Fireplace mode",
-        "nl": "Openhaardmodus"
-      },
-      "tokens": [
+    "actions": [
         {
-          "name": "enabled",
-          "type": "checkbox",
-          "title": {
-            "en": "Enabled",
-            "nl": "Ingeschakeld"
-          },
-          "example": {
-            "en": "Enabled",
-            "nl": "Ingeschakeld"
-          }
+            "id": "fireplace_mode",
+            "title": {
+                "en": "Fireplace mode",
+                "nl": "Openhaardmodus"
+            },
+            "args": [
+                {
+                    "type": "checkbox",
+                    "name": "enabled",
+                    "title": {
+                        "en": "Enabled",
+                        "nl": "Ingeschakeld"
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
