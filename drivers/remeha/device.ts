@@ -1,4 +1,4 @@
-import { Device } from 'homey'
+import { Device, FlowCard } from 'homey'
 import { RemehaMobileApi } from '../../lib/RemehaMobileApi'
 import { RemehaAuth } from '../../lib/RemehaAuth'
 
@@ -46,18 +46,20 @@ class RemehaThermostatDevice extends Device {
 
             // required capabilities
             await this.addCapability('measure_temperature')
-            await this.addCapability('target_temperature')
-            this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
             await this.addCapability('measure_pressure')
             await this.addCapability('alarm_water')
-            await this.addCapability('mode')
-            this.registerCapabilityListener('mode', this._setMode.bind(this))
+
+            // required capabilities with listeners
+            await this._addOrRemoveCapability('mode', true, this._setMode.bind(this), this._actionMode.bind(this))
+            await this._addOrRemoveCapability('target_temperature', true, this._setTargetTemperature.bind(this))
 
             // optional capabilities
             await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('target_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('measure_temperature_outside', capabilities.outdoorTemperature)
-            await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this))
+
+            // optional capabilities with listeners
+            await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this), this._actionFireplaceMode.bind(this))
         } catch (error) {
             this.setUnavailable('Could not find capabilities')
         }
@@ -97,10 +99,11 @@ class RemehaThermostatDevice extends Device {
         } catch (error) { }
     }
 
-    private async _addOrRemoveCapability(capability: string, enabled: boolean, listener?: Device.CapabilityCallback): Promise<void> {
+    private async _addOrRemoveCapability(capability: string, enabled: boolean, listener?: Device.CapabilityCallback, flowActionListener?: FlowCard.RunCallback): Promise<void> {
         if (enabled) {
             await this.addCapability(capability)
             if (listener) this.registerCapabilityListener(capability, listener)
+            if (flowActionListener) await this._addFlowActionCard(capability, flowActionListener)
         } else {
             await this.removeCapability(capability)
         }
@@ -110,6 +113,11 @@ class RemehaThermostatDevice extends Device {
         if (this.hasCapability(capability)) {
             await this.setCapabilityValue(capability, value)
         }
+    }
+
+    private async _addFlowActionCard(action: string, listener: FlowCard.RunCallback): Promise<void> {
+        const actionCard = this.homey.flow.getActionCard(action)
+        actionCard.registerRunListener(listener)
     }
 
     private async _setTargetTemperature(value: number): Promise<void> {
@@ -136,6 +144,10 @@ class RemehaThermostatDevice extends Device {
         }
     }
 
+    private async _actionMode(args: any, state: any): Promise<void> {
+        this._setMode(args.mode)
+    }
+
     private async _setFireplaceMode(value: boolean): Promise<void> {
         await this._refreshAccessToken()
         if (!this._client) return this.setUnavailable('No Remeha Home client')
@@ -146,6 +158,10 @@ class RemehaThermostatDevice extends Device {
         } catch (error) {
             this.setUnavailable('Could not set fireplace mode')
         }
+    }
+
+    private async _actionFireplaceMode(args: any, state: any): Promise<void> {
+        this._setFireplaceMode(args.enabled)
     }
 
     private async _refreshAccessToken(): Promise<void> {

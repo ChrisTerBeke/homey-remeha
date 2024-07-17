@@ -34,6 +34,85 @@
     "url": "https://github.com/ChrisTerBeke/homey-remeha/issues"
   },
   "homeyCommunityTopicId": 109529,
+  "flow": {
+    "actions": [
+      {
+        "id": "mode",
+        "title": {
+          "en": "Set mode to ...",
+          "nl": "Zet modus op ..."
+        },
+        "titleFormatted": {
+          "en": "Set mode to [[mode]]",
+          "nl": "Zet modus op [[mode]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=remeha"
+          },
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "off",
+                "title": {
+                  "en": "Off",
+                  "nl": "Uit"
+                }
+              },
+              {
+                "id": "auto",
+                "title": {
+                  "en": "Auto (schedule)",
+                  "nl": "Automatisch (schema)"
+                }
+              },
+              {
+                "id": "manual",
+                "title": {
+                  "en": "Manual",
+                  "nl": "Handmatig"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fireplace_mode",
+        "title": {
+          "en": "Set fireplace mode to ...",
+          "nl": "Zet openhaardmodus op ..."
+        },
+        "titleFormatted": {
+          "en": "Set fireplace mode to [[enabled]]",
+          "nl": "Zet openhaardmodus op [[enabled]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=remeha"
+          },
+          {
+            "type": "checkbox",
+            "name": "enabled",
+            "title": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
