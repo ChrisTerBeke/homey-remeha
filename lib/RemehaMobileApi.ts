@@ -192,7 +192,7 @@ export class RemehaMobileApi {
     private static _mapResponseModeToHomeyMode(mode: string): string {
         switch (mode) {
             case 'Manual': return 'manual'
-            case 'TemporaryOverride': return 'manual'
+            case 'TemporaryOverride': return 'auto'
             case 'Scheduling': return 'auto'
             case 'FrostProtection': return 'off'
             default: return 'off'
