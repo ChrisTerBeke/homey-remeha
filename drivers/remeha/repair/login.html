@@ -1,0 +1,66 @@
+<script type="application/javascript">
+    function login() {
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        Homey.showLoadingOverlay();
+        Homey.emit("repair", `${email}|${password}`)
+            .then(() => {
+                Homey.done();
+            })
+            .catch((error) => {
+                Homey.alert(error.message, "error");
+            })
+            .finally(() => {
+                Homey.hideLoadingOverlay();
+            });
+    }
+</script>
+
+<header class="homey-header">
+    <h1 class="homey-title" data-i18n="pair.title"></h1>
+</header>
+
+<p data-i18n="pair.description"></p>
+
+<form class="homey-form">
+    <fieldset class="homey-form-fieldset">
+        <div class="homey-form-group">
+            <label
+                class="homey-form-label"
+                for="email"
+                data-i18n="pair.email"
+            ></label>
+            <input
+                class="homey-form-input"
+                id="email"
+                type="email"
+                autocomplete="email"
+                value=""
+                required
+            />
+        </div>
+        <div class="homey-form-group">
+            <label
+                class="homey-form-label"
+                for="password"
+                data-i18n="pair.password"
+            ></label>
+            <input
+                class="homey-form-input"
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                value=""
+                required
+            />
+        </div>
+    </fieldset>
+</form>
+
+<br />
+
+<button
+    class="homey-button-primary-full"
+    onclick="login()"
+    data-i18n="pair.submit"
+></button>
