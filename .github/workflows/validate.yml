@@ -1,21 +1,13 @@
-name: Validate Homey App
-
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
-  validate:
+  main:
+    name: Validate Homey App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: athombv/github-action-homey-app-validate@master
         with:
-          node-version: 18
-          cache: npm
-      - run: npm ci
-      - run: npm install --global --no-optional homey
-      - run: npm run build
-      - run: npm run test
+          level: verified
