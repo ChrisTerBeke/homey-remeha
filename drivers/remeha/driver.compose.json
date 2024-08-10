@@ -1,70 +1,71 @@
 {
-    "name": {
-        "en": "Remeha eTwist"
+  "name": {
+    "en": "Remeha eTwist"
+  },
+  "class": "thermostat",
+  "capabilities": [
+    "target_temperature",
+    "measure_temperature",
+    "measure_temperature_water",
+    "measure_temperature_outside",
+    "measure_pressure",
+    "alarm_water"
+  ],
+  "platforms": ["local"],
+  "connectivity": ["cloud"],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "login"
     },
-    "class": "thermostat",
-    "capabilities": [
-        "target_temperature",
-        "measure_temperature",
-        "measure_temperature_water",
-        "measure_temperature_outside",
-        "measure_pressure",
-        "alarm_water"
-    ],
-    "platforms": [
-        "local"
-    ],
-    "connectivity": [
-        "cloud"
-    ],
-    "images": {
-        "small": "{{driverAssetsPath}}/images/small.png",
-        "large": "{{driverAssetsPath}}/images/large.png",
-        "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
     },
-    "pair": [
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "repair": [
+    {
+      "id": "login"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Troubleshooting",
+        "nl": "Probleemoplossing"
+      },
+      "children": [
         {
-            "id": "login"
+          "id": "debugEnabled",
+          "type": "checkbox",
+          "label": {
+            "en": "Enable debug data",
+            "nl": "Schakel probleemverhelping in"
+          },
+          "value": false
         },
         {
-            "id": "list_devices",
-            "template": "list_devices",
-            "navigation": {
-                "next": "add_devices"
-            }
-        },
-        {
-            "id": "add_devices",
-            "template": "add_devices"
+          "id": "apiData",
+          "type": "textarea",
+          "label": {
+            "en": "Last API response",
+            "nl": "Laatste API-reactie"
+          },
+          "value": "{}"
         }
-    ],
-    "settings": [
-        {
-            "type": "group",
-            "label": {
-                "en": "Troubleshooting",
-                "nl": "Probleemoplossing"
-            },
-            "children": [
-                {
-                    "id": "debugEnabled",
-                    "type": "checkbox",
-                    "label": {
-                        "en": "Enable debug data",
-                        "nl": "Schakel probleemverhelping in"
-                    },
-                    "value": false
-                },
-                {
-                    "id": "apiData",
-                    "type": "textarea",
-                    "label": {
-                        "en": "Last API response",
-                        "nl": "Laatste API-reactie"
-                    },
-                    "value": "{}"
-                }
-            ]
-        }
-    ]
+      ]
+    }
+  ]
 }

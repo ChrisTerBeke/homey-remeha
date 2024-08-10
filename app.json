@@ -154,6 +154,11 @@
           "template": "add_devices"
         }
       ],
+      "repair": [
+        {
+          "id": "login"
+        }
+      ],
       "settings": [
         {
           "type": "group",
