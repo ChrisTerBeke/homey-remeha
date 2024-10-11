@@ -52,5 +52,8 @@
   },
   "0.3.2": {
     "en": "Added repair flow to fix login token"
+  },
+  "0.3.3": {
+    "en": "Fixed some crashes, added alarms for offline and errors"
   }
 }
