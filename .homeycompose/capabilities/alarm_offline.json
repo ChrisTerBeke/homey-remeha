@@ -1,0 +1,11 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Offline",
+        "nl": "Offline"
+    },
+    "uiComponent": "sensor",
+    "icon": "/assets/capabilities/alarm_generic.svg",
+    "getable": true,
+    "setable": false
+}

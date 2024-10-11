@@ -1,0 +1,10 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Water pressure",
+        "nl": "Waterdruk"
+    },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false
+}

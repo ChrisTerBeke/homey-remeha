@@ -9,7 +9,9 @@
     "measure_temperature_water",
     "measure_temperature_outside",
     "measure_pressure",
-    "alarm_water"
+    "alarm_water",
+    "alarm_offline",
+    "alarm_error"
   ],
   "platforms": ["local"],
   "connectivity": ["cloud"],

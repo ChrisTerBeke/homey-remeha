@@ -125,7 +125,9 @@
         "measure_temperature_water",
         "measure_temperature_outside",
         "measure_pressure",
-        "alarm_water"
+        "alarm_water",
+        "alarm_offline",
+        "alarm_error"
       ],
       "platforms": [
         "local"
@@ -192,6 +194,38 @@
     }
   ],
   "capabilities": {
+    "alarm_error": {
+      "type": "boolean",
+      "title": {
+        "en": "Error",
+        "nl": "Error"
+      },
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/alarm_generic.svg",
+      "getable": true,
+      "setable": false
+    },
+    "alarm_offline": {
+      "type": "boolean",
+      "title": {
+        "en": "Offline",
+        "nl": "Offline"
+      },
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/alarm_generic.svg",
+      "getable": true,
+      "setable": false
+    },
+    "alarm_water": {
+      "type": "boolean",
+      "title": {
+        "en": "Water pressure",
+        "nl": "Waterdruk"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false
+    },
     "fireplace_mode": {
       "type": "boolean",
       "title": {

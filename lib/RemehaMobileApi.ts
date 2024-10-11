@@ -10,6 +10,8 @@ export type DeviceCapabilities = {
 export type DeviceData = {
     id: string
     name: string
+    isOnline: boolean
+    hasError: boolean
     mode: string
     temperature: number
     targetTemperature: number
@@ -41,6 +43,8 @@ type ResponseHotWaterZone = {
 
 type ResponseAppliance = {
     applianceId: string
+    applianceOnline: boolean
+    errorStatus: string
     climateZones: ResponseClimateZone[]
     hotWaterZones: ResponseHotWaterZone[]
     waterPressure: number
@@ -162,6 +166,8 @@ export class RemehaMobileApi {
         const deviceData: DeviceData = {
             id: appliance.climateZones[0].climateZoneId,
             name: appliance.climateZones[0].name,
+            isOnline: appliance.applianceOnline,
+            hasError: RemehaMobileApi._mapErrorStatusToHomeyHasError(appliance.errorStatus),
             mode: RemehaMobileApi._mapResponseModeToHomeyMode(appliance.climateZones[0].zoneMode),
             temperature: appliance.climateZones[0].roomTemperature,
             targetTemperature: appliance.climateZones[0].setPoint,
@@ -196,6 +202,13 @@ export class RemehaMobileApi {
             case 'Scheduling': return 'auto'
             case 'FrostProtection': return 'off'
             default: return 'off'
+        }
+    }
+
+    private static _mapErrorStatusToHomeyHasError(status: string): boolean {
+        switch (status) {
+            case 'Running': return false
+            default: return true
         }
     }
 }

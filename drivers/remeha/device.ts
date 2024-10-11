@@ -24,15 +24,19 @@ class RemehaThermostatDevice extends Device {
     private async _init(): Promise<void> {
         const { accessToken } = this.getStore()
         this._client = new RemehaMobileApi(accessToken)
-        this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
-        await this._syncCapabilities()
-        this._syncAttributes()
+        this._syncInterval = setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
+        setTimeout(this._sync.bind(this), 2000)
     }
 
     async _uninit(): Promise<void> {
         clearInterval(this._syncInterval as NodeJS.Timeout)
         this._syncInterval = undefined
         this._client = undefined
+    }
+
+    private async _sync(): Promise<void> {
+        await this._syncCapabilities()
+        await this._syncAttributes()
     }
 
     private async _syncCapabilities(): Promise<void> {
@@ -48,6 +52,8 @@ class RemehaThermostatDevice extends Device {
             await this.addCapability('measure_temperature')
             await this.addCapability('measure_pressure')
             await this.addCapability('alarm_water')
+            await this.addCapability('alarm_offline')
+            await this.addCapability('alarm_error')
 
             // required capabilities with listeners
             await this._addOrRemoveCapability('mode', true, this._setMode.bind(this), this._actionMode.bind(this))
@@ -81,6 +87,8 @@ class RemehaThermostatDevice extends Device {
             this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
             this.setCapabilityValue('alarm_water', !data.waterPressureOK)
             this.setCapabilityValue('mode', data.mode)
+            this.setCapabilityValue('alarm_offline', !data.isOnline)
+            this.setCapabilityValue('alarm_error', data.hasError)
 
             // optional capabilities
             this._setOptionalCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
@@ -110,7 +118,7 @@ class RemehaThermostatDevice extends Device {
     }
 
     private async _setOptionalCapabilityValue(capability: string, value: any): Promise<void> {
-        if (this.hasCapability(capability)) {
+        if (this.hasCapability(capability) && value !== undefined) {
             await this.setCapabilityValue(capability, value)
         }
     }
