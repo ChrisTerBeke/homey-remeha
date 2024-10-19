@@ -55,5 +55,8 @@
   },
   "0.3.3": {
     "en": "Fixed some crashes, added alarms for offline and errors"
+  },
+  "0.3.4": {
+    "en": "Improved type checking before setting capability values"
   }
 }
