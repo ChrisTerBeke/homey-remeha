@@ -82,19 +82,19 @@ class RemehaThermostatDevice extends Device {
             this.setAvailable()
 
             // required capabilities
-            this.setCapabilityValue('measure_temperature', data.temperature)
-            this.setCapabilityValue('target_temperature', data.targetTemperature)
-            this.setCapabilityValue('measure_pressure', (data.waterPressure * 1000))
-            this.setCapabilityValue('alarm_water', !data.waterPressureOK)
-            this.setCapabilityValue('mode', data.mode)
-            this.setCapabilityValue('alarm_offline', !data.isOnline)
-            this.setCapabilityValue('alarm_error', data.hasError)
+            this._setCapabilityValue('measure_temperature', 'number', data.temperature)
+            this._setCapabilityValue('target_temperature', 'number', data.targetTemperature)
+            this._setCapabilityValue('measure_pressure', 'number', (data.waterPressure * 1000))
+            this._setCapabilityValue('alarm_water', 'boolean', !data.waterPressureOK)
+            this._setCapabilityValue('mode', 'string', data.mode)
+            this._setCapabilityValue('alarm_offline', 'boolean', !data.isOnline)
+            this._setCapabilityValue('alarm_error', 'boolean', data.hasError)
 
             // optional capabilities
-            this._setOptionalCapabilityValue('measure_temperature_outside', data.outdoorTemperature)
-            this._setOptionalCapabilityValue('measure_temperature_water', data.waterTemperature)
-            this._setOptionalCapabilityValue('target_temperature_water', data.targetWaterTemperature)
-            this._setOptionalCapabilityValue('fireplace_mode', data.fireplaceMode)
+            this._setCapabilityValue('measure_temperature_outside', 'number', data.outdoorTemperature)
+            this._setCapabilityValue('measure_temperature_water', 'number', data.waterTemperature)
+            this._setCapabilityValue('target_temperature_water', 'number', data.targetWaterTemperature)
+            this._setCapabilityValue('fireplace_mode', 'boolean', data.fireplaceMode)
         } catch (error) {
             this.setUnavailable('Could not find thermostat data')
         }
@@ -117,8 +117,8 @@ class RemehaThermostatDevice extends Device {
         }
     }
 
-    private async _setOptionalCapabilityValue(capability: string, value: any): Promise<void> {
-        if (this.hasCapability(capability) && value !== undefined) {
+    private async _setCapabilityValue(capability: string, type: string, value: any): Promise<void> {
+        if (this.hasCapability(capability) && typeof value === type) {
             await this.setCapabilityValue(capability, value)
         }
     }
