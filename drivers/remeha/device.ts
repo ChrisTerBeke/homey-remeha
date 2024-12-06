@@ -21,15 +21,19 @@ class RemehaThermostatDevice extends Device {
         this._init()
     }
 
+    onDeleted(): void {
+        this.homey.clearInterval(this._syncInterval)
+    }
+
     private async _init(): Promise<void> {
         const { accessToken } = this.getStore()
         this._client = new RemehaMobileApi(accessToken)
-        this._syncInterval = setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
-        setTimeout(this._sync.bind(this), 2000)
+        this._syncInterval = this.homey.setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
+        this.homey.setTimeout(this._sync.bind(this), 2000)
     }
 
     async _uninit(): Promise<void> {
-        clearInterval(this._syncInterval as NodeJS.Timeout)
+        this.homey.clearInterval(this._syncInterval)
         this._syncInterval = undefined
         this._client = undefined
     }
