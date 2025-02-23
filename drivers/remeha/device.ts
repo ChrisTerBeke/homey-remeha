@@ -3,44 +3,18 @@ import { RemehaMobileApi } from '../../lib/RemehaMobileApi'
 import { RemehaAuth } from '../../lib/RemehaAuth'
 
 const POLL_INTERVAL_MS = 1000 * 60 * 1
+const INIT_TIMEOUT_MS = 1000 * 10
 
 class RemehaThermostatDevice extends Device {
 
-    private _syncInterval?: NodeJS.Timer
     private _client?: RemehaMobileApi
 
     async onInit(): Promise<void> {
-        this._init()
-    }
-
-    async onUninit(): Promise<void> {
-        this._uninit()
-    }
-
-    async onAdded(): Promise<void> {
-        this._init()
-    }
-
-    onDeleted(): void {
-        this.homey.clearInterval(this._syncInterval)
-    }
-
-    private async _init(): Promise<void> {
+        await this._syncCapabilities()
         const { accessToken } = this.getStore()
         this._client = new RemehaMobileApi(accessToken)
-        this._syncInterval = this.homey.setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
-        this.homey.setTimeout(this._sync.bind(this), 2000)
-    }
-
-    async _uninit(): Promise<void> {
-        this.homey.clearInterval(this._syncInterval)
-        this._syncInterval = undefined
-        this._client = undefined
-    }
-
-    private async _sync(): Promise<void> {
-        await this._syncCapabilities()
-        await this._syncAttributes()
+        this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+        this.homey.setTimeout(this._syncAttributes.bind(this), INIT_TIMEOUT_MS)
     }
 
     private async _syncCapabilities(): Promise<void> {
@@ -53,13 +27,11 @@ class RemehaThermostatDevice extends Device {
             if (!capabilities) return this.setUnavailable('Could not find capabilities')
 
             // required capabilities
-            await this.addCapability('measure_temperature')
-            await this.addCapability('measure_pressure')
-            await this.addCapability('alarm_water')
-            await this.addCapability('alarm_offline')
-            await this.addCapability('alarm_error')
-
-            // required capabilities with listeners
+            await this._addOrRemoveCapability('measure_temperature', true)
+            await this._addOrRemoveCapability('measure_pressure', true)
+            await this._addOrRemoveCapability('alarm_water', true)
+            await this._addOrRemoveCapability('alarm_offline', true)
+            await this._addOrRemoveCapability('alarm_error', true)
             await this._addOrRemoveCapability('mode', true, this._setMode.bind(this), this._actionMode.bind(this))
             await this._addOrRemoveCapability('target_temperature', true, this._setTargetTemperature.bind(this))
 
@@ -67,8 +39,6 @@ class RemehaThermostatDevice extends Device {
             await this._addOrRemoveCapability('measure_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('target_temperature_water', capabilities.hotWaterZone)
             await this._addOrRemoveCapability('measure_temperature_outside', capabilities.outdoorTemperature)
-
-            // optional capabilities with listeners
             await this._addOrRemoveCapability('fireplace_mode', capabilities.fireplaceMode, this._setFireplaceMode.bind(this), this._actionFireplaceMode.bind(this))
         } catch (error) {
             this.setUnavailable('Could not find capabilities')
@@ -113,11 +83,11 @@ class RemehaThermostatDevice extends Device {
 
     private async _addOrRemoveCapability(capability: string, enabled: boolean, listener?: Device.CapabilityCallback, flowActionListener?: FlowCard.RunCallback): Promise<void> {
         if (enabled) {
-            await this.addCapability(capability)
+            if (!this.hasCapability(capability)) await this.addCapability(capability)
             if (listener) this.registerCapabilityListener(capability, listener)
             if (flowActionListener) await this._addFlowActionCard(capability, flowActionListener)
         } else {
-            await this.removeCapability(capability)
+            if (this.hasCapability(capability)) await this.removeCapability(capability)
         }
     }
 

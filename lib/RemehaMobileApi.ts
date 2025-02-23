@@ -33,6 +33,7 @@ type ResponseClimateZone = {
     capabilityFirePlaceMode: boolean
     firePlaceModeActive?: boolean
     activeHeatingClimateTimeProgramNumber?: number
+    activeComfortDemand: string
 }
 
 type ResponseHotWaterZone = {
@@ -50,8 +51,14 @@ type ResponseAppliance = {
     waterPressure: number
     waterPressureOK: boolean
     capabilityOutdoorTemperature: boolean
-    outdoorTemperature?: number
+    outdoorTemperatureInformation: ResponseOutdoorTemperatureInformation
     capabilityMultiSchedule: boolean
+}
+
+type ResponseOutdoorTemperatureInformation = {
+    outdoorTemperatureSource: string
+    applianceOutdoorTemperature: number
+    isDayTime: boolean
 }
 
 type DashboardResponse = {
@@ -178,7 +185,7 @@ export class RemehaMobileApi {
 
         // not every installation supports outdoor temperature
         if (appliance.capabilityOutdoorTemperature) {
-            deviceData.outdoorTemperature = appliance.outdoorTemperature
+            deviceData.outdoorTemperature = appliance.outdoorTemperatureInformation.applianceOutdoorTemperature
         }
 
         // not every installation supports fireplace mode
@@ -209,6 +216,14 @@ export class RemehaMobileApi {
         switch (status) {
             case 'Running': return false
             default: return true
+        }
+    }
+
+    private static _mapActiveComfortDemandToHomeyMode(activeComfortDemand: string): string {
+        switch (activeComfortDemand) {
+            case 'RequestingHeat': return 'auto'
+            case 'ProducingHeat': return 'auto'
+            default: return 'off'
         }
     }
 }
