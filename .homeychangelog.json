@@ -64,5 +64,8 @@
   },
   "0.3.6": {
     "en": "Fixed outside temperature sensor, stability improvements"
+  },
+  "0.3.7": {
+    "en": "Fix for adjusting target temperature and mode"
   }
 }
