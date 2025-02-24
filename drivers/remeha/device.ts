@@ -2,19 +2,19 @@ import { Device, FlowCard } from 'homey'
 import { RemehaMobileApi } from '../../lib/RemehaMobileApi'
 import { RemehaAuth } from '../../lib/RemehaAuth'
 
-const POLL_INTERVAL_MS = 1000 * 60 * 1
-const INIT_TIMEOUT_MS = 1000 * 10
+const POLL_INTERVAL_MS = 1000 * 60  // every minute
+const INIT_TIMEOUT_MS = 2000  // seconds
 
 class RemehaThermostatDevice extends Device {
 
     private _client?: RemehaMobileApi
 
     async onInit(): Promise<void> {
-        await this._syncCapabilities()
         const { accessToken } = this.getStore()
         this._client = new RemehaMobileApi(accessToken)
-        this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+        this.homey.setTimeout(this._syncCapabilities.bind(this), INIT_TIMEOUT_MS)
         this.homey.setTimeout(this._syncAttributes.bind(this), INIT_TIMEOUT_MS)
+        this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
     }
 
     private async _syncCapabilities(): Promise<void> {
